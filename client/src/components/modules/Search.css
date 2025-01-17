@@ -1,0 +1,61 @@
+
+
+.Search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    font-family: "Inria Serif", serif;
+    color: white;
+}
+
+.Search-top-space {
+    flex: 1;
+}
+
+.Search-headers {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#Search-title {
+    font-size: 64px;
+    margin: 0px;
+}
+
+#Search-subtitle {
+    font-size: 24px;
+    color: var(--darkgrey);
+    margin: 0px;
+}
+
+.Search-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 75%;
+}
+
+.Divider-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 2%;
+    width: 95%;
+}
+
+.Search-divider {
+    background-color: var(--grey);
+    flex: 1;
+}
+
+.Search-addInterest {
+    flex: 1;
+    text-align: center;
+    text-decoration: underline;
+
+}

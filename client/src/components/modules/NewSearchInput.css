@@ -1,0 +1,46 @@
+.u-flex {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: space-evenly;
+  width: 95%;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.material-symbols-outlined {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f6368;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  z-index: 1;
+}
+
+.NewSearchInput-input {
+  flex: 1;
+  padding: 8px 16px 8px 40px;
+  font-size: 14px;
+  border: 1px solid #dfe1e5;
+  border-radius: 24px;
+  outline: none;
+  transition: box-shadow 0.3s;
+  height: 36px;
+}
+
+.NewSearchInput-input:hover,
+.NewSearchInput-input:focus {
+  box-shadow: 0 1px 6px rgba(32,33,36,.28);
+  border-color: rgba(223,225,229,0);
+}
