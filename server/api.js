@@ -18,6 +18,11 @@ const auth = require("./auth");
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
 
+// import Gemini API
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.VITE_GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 //initialize socket
 const socketManager = require("./server-socket");
 
@@ -42,6 +47,22 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 // | write your API methods below!|
 // |------------------------------|
+
+router.post("/aiTheorem", async (req, res) => {
+  const prompt = 'Provide a theorem from pyschology. Only provide the name of the theorem and no other information.';
+  const result = await model.generateContent(prompt);
+  // later I will post this theorem to the database
+  res.send({ text: result.response.text() });
+});
+
+router.get("/aiDescription", async (req, res) => {
+  const prompt = "Provide a one sentence `description` of the theorem " + req.query.theorem;
+  const result = await model.generateContent(prompt);
+  res.send({ text: result.response.text() });
+});
+
+
+
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

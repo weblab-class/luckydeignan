@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { get, post } from "../../utilities";
 import "./Knowledge.css";
 import "../../utilities.css";
-
 
 const Knowledge = () => {
   const [knowledge, setKnowledge] = useState("");
 
-
   useEffect(() => {
-    setKnowledge("The “get it free for a limited time” approach from corporations plays on the consumer behavior tendency loss aversion, aiming to make users feel they’ll miss out if they don’t act.")
-
-}, []);
-  
+    post("/api/aiTheorem").then((response) => {
+      get("/api/aiDescription", { theorem: response.text }).then((description) => {
+        setKnowledge(`${description.text}`);
+      });
+    });
+  }, []);
 
   return (
     <div className="h-screen flex flex-col items-center justify-center font-serif">
