@@ -11,6 +11,7 @@ const express = require("express");
 
 // import models so we can interact with the database
 const User = require("./models/user");
+const Interest = require("./models/Interest");
 
 // import authentication library
 const auth = require("./auth");
@@ -20,7 +21,15 @@ const router = express.Router();
 
 // import Gemini API
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.VITE_GOOGLE_API_KEY);
+
+// Get API key from environment variable
+const API_KEY = process.env.GOOGLE_API_KEY;
+if (!API_KEY) {
+  console.error("GOOGLE_API_KEY is not set in environment variables");
+  process.exit(1);
+}
+
+const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 //initialize socket
@@ -48,11 +57,91 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
+// Initialize Testing User if doesn't exist
+router.post("/init", async (req, res) => {
+  try {
+    let user = await User.findOne({ googleid: "Testing User" });
+    if (!user) {
+      user = new User({
+        name: "Testing User",
+        googleid: "Testing User",
+        interests: [
+          {
+            topic: "Psychology",
+            theorems: [],
+          },
+        ],
+      });
+      await user.save();
+    }
+    res.send(user);
+  } catch (error) {
+    console.error("Error initializing user:", error);
+    res.status(500).send(error);
+  }
+});
+
+example = {"_id":{"$oid":"678eac0291543b6631bfe6c3"},googleid:"Anonymous User",interests:[{topic:"Psychology",theorems:[
+  'The Stroop Effect',
+  'The Bystander Effect',
+  'The Dunning-Kruger Effect',
+  'The Availability Heuristic',
+  'The Framing Effect',
+  'Confirmation Bias',
+  'The Mere-Exposure Effect',
+  'Cognitive Dissonance',
+  'The Peak-End Rule',
+  'Anchoring Bias'
+], counter: 10}]}
+
+
 router.post("/aiTheorem", async (req, res) => {
-  const prompt = 'Provide a theorem from pyschology. Only provide the name of the theorem and no other information.';
-  const result = await model.generateContent(prompt);
-  // later I will post this theorem to the database
-  res.send({ text: result.response.text() });
+  // CODE THAT ATTEMPTED TO CONNECT TO DATABASE AND GET RANDOM INTEREST AND UPDATE THEOREM
+  // const userObj = await User.findOne({googleid: 'Anonymous User'});
+  // // pick a random interest from the user's list
+  // const randomInterest = userObj.interests[Math.floor(Math.random() * userObj.interests.length)];
+  
+  // console.log("User's interests:", userObj.interests);
+  // console.log("Selected random interest:", randomInterest);
+  
+  const randomInterest = example.interests[Math.floor(Math.random() * example.interests.length)];
+  console.log("theorems before", randomInterest.theorems);
+
+  // if counter == len(theorems) , fetch 10 more from LLM and add to theorems
+  if (randomInterest.counter == randomInterest.theorems.length) {
+    const prompt = `Provide 10 theorems from ${randomInterest.topic} that is not in this list ${randomInterest.theorems}. Return the name of each theorem with no description of each theorem with a '//' in between each theorem. Return you answer in the form of a string. Include no whitespace in between each theorem and the // characters, but the theorems themselves can have spaces.`;
+    const result = await model.generateContent(prompt);
+
+    // Process and format result from LLM, update current interests
+    const temp = result.response.text().split("//");
+    const cleanedResult = temp.map((item) => item.trim());
+    randomInterest.theorems.push(...cleanedResult);
+  }
+
+  console.log("theorems after", randomInterest.theorems);
+
+  // Send back next theorem, increment counter
+  final = randomInterest.theorems[randomInterest.counter];
+  randomInterest.counter++;
+
+  console.log('updated counter', randomInterest.counter)
+  res.send({ text: final, topic: randomInterest.topic });
+  
+  // // Update the theorems array of the specific interest
+  // await User.findOneAndUpdate(
+  //   {
+  //     googleid: 'Anonymous User',
+  //     'interests.topic': randomInterest.topic  // Find the specific interest by topic
+  //   },
+  //   {
+  //     $push: {
+  //       'interests.$.theorems': result.response.text()  // Add theorem to existing interest
+  //     }
+  //   },
+  //   {new: true}
+  // );
+  
+  
 });
 
 router.get("/aiDescription", async (req, res) => {
