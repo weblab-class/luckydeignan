@@ -9,13 +9,13 @@ import { useParams } from "react-router-dom";
  * @param {string} theorems of the interest
  */
 
-const RandomInterest = (props) => {
+const Interest = (props) => {
 
     return (
-        <button className="bg-secondary hover:bg-tertiary hover:text-black text-white py-2 px-4 rounded mt-4">
+        <button className="bg-secondary hover:text-black text-white py-2 px-4 rounded">
             {props.topic}
         </button>
     )
 }
 
-export default RandomInterest
+export default Interest

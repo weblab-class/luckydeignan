@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { get, post } from "../../utilities";
-import RandomInterest from "./interest";
+import Interest from "./interest";
 import "./Knowledge.css";
 import "../../utilities.css";
 
@@ -25,7 +25,7 @@ const Knowledge = () => {
   const handleLearnMore = () => {
     const searchQuery = `${currentTheorem} ${interest} theorem`;
     const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-    window.open(googleUrl, '_blank'); // TODO can switch second param to '_self' later in process
+    window.open(googleUrl, '_blank'); 
   };
 
   return (
@@ -33,12 +33,12 @@ const Knowledge = () => {
       <h1 className="text-2xl text-white mb-4 text-center underline">
         Today's Piece of Knowledge
       </h1>
-      <p className="text-lg text-white text-center">{knowledge}</p>
+      <p className="text-lg text-white text-center w-11/12">{knowledge}</p>
       
       <div className="flex flex-col items-center w-3/4">
         <h3 className="text-white pt-16">Based on your interest in:</h3>
-        <div className="flex flex-row justify-center w-full gap-x-4">
-          <RandomInterest topic={interest}/>
+        <div className="flex flex-row  justify-center gap-x-4">
+          <Interest topic={interest}/>
           <button 
             onClick={handleLearnMore}
             className="bg-tertiary text-black hover:bg-tertiary hover:text-black text-white py-2 px-4 rounded mt-4"

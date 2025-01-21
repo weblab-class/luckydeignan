@@ -37,6 +37,7 @@
   outline: none;
   transition: box-shadow 0.3s;
   height: 36px;
+  color: black;
 }
 
 .NewSearchInput-input:hover,
