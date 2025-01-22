@@ -57,29 +57,6 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
-// Initialize Testing User if doesn't exist
-router.post("/init", async (req, res) => {
-  try {
-    let user = await User.findOne({ googleid: "Testing User" });
-    if (!user) {
-      user = new User({
-        name: "Testing User",
-        googleid: "Testing User",
-        interests: [
-          {
-            topic: "Psychology",
-            theorems: [],
-          },
-        ],
-      });
-      await user.save();
-    }
-    res.send(user);
-  } catch (error) {
-    console.error("Error initializing user:", error);
-    res.status(500).send(error);
-  }
-});
 
 example = {"_id":{"$oid":"678eac0291543b6631bfe6c3"},googleid:"Anonymous User",interests:[{topic:"Psychology",theorems:[
   'The Stroop Effect',

@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Search.css";
 import NewSearchInput from "./NewSearchInput";
+import { UserContext } from "../App";
 
 const Search = () => {
+  const { userId } = useContext(UserContext);
+
   return (
     <div className="flex flex-col justify-center items-center text-white font-serif h-screen">
       <div className="flex flex-col items-center justify-end">
@@ -17,7 +20,16 @@ const Search = () => {
           <div className="text-white">or</div>
           <hr className="flex-grow h-px bg-secondary border-0" />
         </div>
+        {userId ? (
+          <div>
         <h4 className="items-center justify-center underline mt-8">Add a New Interest to Your Profile</h4>
+        </div>
+        ) : (
+          <div>
+        <h4 className="items-center justify-center underline mt-8">Sign in to Add a New Interest to Your Profile</h4>
+        </div>
+        )
+      }
     </div>
   );
 };
