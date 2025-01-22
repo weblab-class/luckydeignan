@@ -6,6 +6,26 @@ import { UserContext } from "../App";
 const Search = () => {
   const { userId } = useContext(UserContext);
 
+  const performSearch = (value) => {
+    if (value.trim() !== "") {
+      const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(searchValue)}`;
+      window.open(googleUrl, "_self");
+      setSearchValue(""); // Clear the input after search
+    }
+  };
+
+  const handleSubmit = (event, value) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      performSearch(value);
+    }
+  };
+
+  const handleButtonClick = (event, value) => {
+    event.preventDefault();
+    performSearch(value);
+  };
+
   return (
     <div className="flex flex-col justify-center items-center text-white font-serif h-screen">
       <div className="flex flex-col items-center justify-end">
@@ -13,23 +33,26 @@ const Search = () => {
         <h3 className="text-xl text-gray-300">(like google but way way better)</h3>
       </div>
       <div className="w-3/4 mt-4 mb-16">
-        <NewSearchInput />
+        <NewSearchInput defaultText="Search Google or type a URL" handleSubmit={handleSubmit} handleButtonClick={handleButtonClick}/>
       </div>
-        <div className="flex flex-row items-center w-11/12 gap-1">
-          <hr className="flex-grow h-px bg-secondary border-0" />
-          <div className="text-white">or</div>
-          <hr className="flex-grow h-px bg-secondary border-0" />
+      <div className="flex flex-row items-center w-11/12 gap-1">
+        <hr className="flex-grow h-px bg-secondary border-0" />
+        <div className="text-white">or</div>
+        <hr className="flex-grow h-px bg-secondary border-0" />
+      </div>
+      {userId ? (
+        <div>
+          <h4 className="items-center justify-center underline mt-8 text-base font-bold">
+            <a href="/profile">Add a New Interest to Your Profile</a>
+          </h4>
         </div>
-        {userId ? (
-          <div>
-        <h4 className="items-center justify-center underline mt-8">Add a New Interest to Your Profile</h4>
+      ) : (
+        <div>
+          <h4 className="items-center justify-center font-bold mt-8">
+            Sign in to Add a New Interest to Your Profile
+          </h4>
         </div>
-        ) : (
-          <div>
-        <h4 className="items-center justify-center underline mt-8">Sign in to Add a New Interest to Your Profile</h4>
-        </div>
-        )
-      }
+      )}
     </div>
   );
 };

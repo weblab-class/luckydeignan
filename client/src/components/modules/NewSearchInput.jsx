@@ -6,6 +6,8 @@ import "./NewSearchInput.css";
  *
  * Proptypes
  * @param {string} defaultText is the placeholder text of the search input
+ * @param {func} handleSubmit: function that performs the search
+ * @param {func} handleButtonClick: function that performs the search
  */
 
 // TODO: change this fucntion so that it takes in the function it performs as a param, that way we can use in profile and home page
@@ -38,7 +40,7 @@ const NewSearchInput = (props) => {
             <div className="input-container">
                 <button
                     className="material-symbols-outlined"
-                    onClick={handleButtonClick}
+                    onClick={handleButtonClick(event, searchValue)}
                 >
                     search
                 </button>
