@@ -4,6 +4,7 @@ const Interest = require("./Interest");
 const UserSchema = new mongoose.Schema({
   name: String,
   googleid: String,
+  counter: { type: Number, default: 0 },
   interests: [
     {
       topic: String,

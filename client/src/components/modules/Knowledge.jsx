@@ -14,17 +14,30 @@ const Knowledge = () => {
 
 
   useEffect(() => {
-    post("/api/aiTheorem").then((response) => {
-      setInterest(response.topic);
-      setCurrentTheorem(response.text);
-      get("/api/aiDescription", { theorem: response.text }).then((description) => {
-        setKnowledge(`${description.text}`);
-      }).catch((error) => {
-        console.log(error);
-        setKnowledge("Oops! Something went wrong. Try again in a minute.");
-      });
-    });
-  }, []);
+    if (userId) {
+      post("/api/aiTheorem") // first retrieve theorem from database
+        .then((response) => {
+          if (response.err) {
+            setKnowledge(response.err);
+            return Promise.reject("An uninterested bloke"); // throw error if no interests
+          }
+          setInterest(response.topic); // set interest and theorem
+          setCurrentTheorem(response.text);
+          return get("/api/aiDescription", { theorem: response.text }); // get description of theorem
+        })
+        .then((description) => {
+          setKnowledge(`${description.text}`); // set theorem description
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error === "An uninterested bloke") return; // Already set the error message
+          setKnowledge("Oops! Something went wrong. Try again in a minute."); // hopefully just an API limit error
+        });
+    } else {
+      setKnowledge("Please log in to get started."); // user aint logged in
+    }
+    
+  }, [userId]);
 
   const handleLearnMore = () => {
     const searchQuery = `${currentTheorem} ${interest} theorem`;
