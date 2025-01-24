@@ -43,6 +43,7 @@ const NewSearchInput = (props) => {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     onKeyDown={handleSubmit}
+                    autoFocus
                     className="NewSearchInput-input"
                 />
             </div>

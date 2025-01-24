@@ -1,3 +1,9 @@
+after Bama to-do list:
+- add favicon
+- responsive design
+- choose your profile pic
+- remove interest
+
 # How to code a webapp with this skeleton
 
 ## Initial setup

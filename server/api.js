@@ -58,19 +58,6 @@ router.post("/initsocket", (req, res) => {
 // |------------------------------|
 
 
-example = {"_id":{"$oid":"678eac0291543b6631bfe6c3"},googleid:"Anonymous User",interests:[{topic:"Psychology",theorems:[
-  'The Stroop Effect',
-  'The Bystander Effect',
-  'The Dunning-Kruger Effect',
-  'The Availability Heuristic',
-  'The Framing Effect',
-  'Confirmation Bias',
-  'The Mere-Exposure Effect',
-  'Cognitive Dissonance',
-  'The Peak-End Rule',
-  'Anchoring Bias'
-], counter: 10}]}
-
 
 router.post("/aiTheorem", async (req, res) => {
   // CODE THAT ATTEMPTED TO CONNECT TO DATABASE AND GET RANDOM INTEREST AND UPDATE THEOREM
@@ -91,9 +78,10 @@ router.post("/aiTheorem", async (req, res) => {
   // const randomInterest = example.interests[Math.floor(Math.random() * example.interests.length)];
   console.log("theorems before", randomInterest.theorems);
 
+
   // if counter == len(theorems) , fetch 10 more from LLM and add to theorems
   if (randomInterest.counter === randomInterest.theorems.length) {
-    const prompt = `Provide 10 theorems from ${randomInterest.topic} that is not in this list ${randomInterest.theorems}. Return the name of each theorem with no description of each theorem with a '//' in between each theorem. Return you answer in the form of a string. Include no whitespace in between each theorem and the // characters, but the theorems themselves can have spaces.`;
+    const prompt = `Provide 10 theorems/fun facts from ${randomInterest.topic} that is not in this list ${randomInterest.theorems}. Return the name of each theorem with no description of each theorem with a '//' in between each theorem. Return you answer in the form of a string. Include no whitespace in between each theorem and the // characters, but the theorems themselves can have spaces.`;
     const result = await model.generateContent(prompt);
 
     // Process and format result from LLM, update current interests
@@ -146,11 +134,70 @@ router.post("/aiTheorem", async (req, res) => {
 });
 
 router.get("/aiDescription", async (req, res) => {
-  const prompt = "Provide a one sentence `description` of the theorem " + req.query.theorem;
+  const prompt = "Provide a one sentence `description` of the theorem/fun fact " + req.query.theorem + " in the context of " + req.query.topic;
   const result = await model.generateContent(prompt);
   res.send({ text: result.response.text() });
 });
 
+router.post("/newInterest", (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $push: { interests: { topic: req.body.topic, theorems: [], counter: 0 } } },
+    { new: true }
+  ).then((updatedUser) => {
+    res.send(updatedUser.interests);
+  }).catch((err) => {
+    console.log(err);
+  })
+  })
+
+router.get("/interests", (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    res.send(user.interests);
+  }).catch((err) => {
+    res.status(500).send('User Not');
+  });
+});
+
+router.get("/suggestions", (req, res) => {
+  User.findById(req.user._id).then(async (user) => {  
+    const topics = user.interests.map((interest) => interest.topic);
+    const prompt = "Provide 3 potential new interests that are not in this list but related to the topics" + topics + ". Moreover, you should be able to generate fun facts/theorems about each of the topics in future requests. Return the name of each interest with no description of each interest with a '//' in between each interest. Return you answer in the form of a string. Include no whitespace in between each interest and the // characters, but the interests themselves can have spaces between their words.`";
+    const result = await model.generateContent(prompt);
+    const temp = result.response.text().split("//");
+    const suggestions = temp.map((item) => item.trim());
+    const final = suggestions.map((suggestion) => {
+      return { topic: suggestion, _id: Math.random() };
+    })
+    res.send(final);
+  })
+});
+
+router.get("/validInterest", async (req, res) => {
+  const prompt = "Will you be able to generate many fun facts or theorems about the following input, simply return Yes or No: " + req.query.topic;
+  const result = await model.generateContent(prompt);
+  const response = result.response.text().toLowerCase();
+  console.log('valid?', result.response.text());
+  if (response.includes("yes")) {
+    console.log('sanity check passed')
+    res.send({ valid: true });
+  } else {
+    console.log('sanity check failed')
+    res.send({ valid: false });
+  }
+});
+
+router.post("/deleteInterest", (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $pull: { interests: { topic: req.body.topic } } },
+    { new: true }
+  ).then((updatedUser) => {
+    res.send(updatedUser.interests);
+  }).catch((err) => {
+    console.log(err);
+  })
+})
 
 
 

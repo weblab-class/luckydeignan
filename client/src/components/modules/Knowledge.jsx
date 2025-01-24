@@ -7,7 +7,7 @@ import { UserContext } from "../App";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 
 const Knowledge = () => {
-  const [knowledge, setKnowledge] = useState("");
+  const [knowledge, setKnowledge] = useState("Loading..."); // Start with loading state
   const [interest, setInterest] = useState("");
   const [currentTheorem, setCurrentTheorem] = useState("");
   const { userId, handleLogin, handleLogout } = useContext(UserContext);
@@ -23,7 +23,7 @@ const Knowledge = () => {
           }
           setInterest(response.topic); // set interest and theorem
           setCurrentTheorem(response.text);
-          return get("/api/aiDescription", { theorem: response.text }); // get description of theorem
+          return get("/api/aiDescription", { theorem: response.text , topic: response.topic }); // get description of theorem
         })
         .then((description) => {
           setKnowledge(`${description.text}`); // set theorem description
@@ -33,8 +33,12 @@ const Knowledge = () => {
           if (error === "An uninterested bloke") return; // Already set the error message
           setKnowledge("Oops! Something went wrong. Try again in a minute."); // hopefully just an API limit error
         });
+    } else if (userId === undefined) {
+      // userId is undefined means we're still loading
+      setKnowledge("Loading...");
     } else {
-      setKnowledge("Please log in to get started."); // user aint logged in
+      // userId is null means we're definitely logged out
+      setKnowledge("Please log in to get started.");
     }
     
   }, [userId]);
@@ -64,11 +68,11 @@ const Knowledge = () => {
           
           <div className="flex flex-col items-center w-3/4">
             <h3 className="text-white pt-16">Based on your interest in:</h3>
-            <div className="flex flex-row justify-center gap-x-4">
+            <div className="flex flex-row items-center justify-center gap-x-4">
               <Interest topic={interest}/>
               <button 
                 onClick={handleLearnMore}
-                className="bg-tertiary text-black hover:bg-tertiary hover:text-black text-white py-2 px-4 rounded mt-4"
+                className="bg-tertiary text-black hover:bg-tertiary hover:text-black text-white py-2 px-4 rounded my-4"
               >
                 Click to Learn More
               </button>

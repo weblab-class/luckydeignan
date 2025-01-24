@@ -2,20 +2,20 @@ import react, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 /**
- * Interest is a component for displaying what interest inspired the Fun Fact
+ * Interest component for displaying a single interest
  *
  * Proptypes
  * @param {string} topic of the interest
- * @param {string} theorems of the interest
+ * @param {function} func that performs the desired functionality
  */
 
-const Interest = (props) => {
+const Interest = ({ topic, func = () => console.log("Clicked interest button (no function provided)") }) => {
 
     return (
-        <button className="bg-secondary hover:text-black text-white py-2 px-4 rounded">
-            {props.topic}
+        <button className="bg-secondary hover:text-black text-white py-2 px-4 rounded" onClick={() => func(topic)} >
+            {topic}
         </button>
     )
-}
+};
 
 export default Interest

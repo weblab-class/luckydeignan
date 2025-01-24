@@ -31,7 +31,7 @@ const Search = () => {
       {userId ? (
         <div>
           <h4 className="items-center justify-center underline mt-8 text-base font-bold">
-            <a href="/profile">Add a New Interest to Your Profile</a>
+            <a href="/profile">Click Here to Add a New Interest to Your Profile</a>
           </h4>
         </div>
       ) : (
