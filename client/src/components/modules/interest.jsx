@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 const Interest = ({ topic, func = () => console.log("Clicked interest button (no function provided)") }) => {
 
     return (
-        <button className="bg-secondary hover:text-black text-white py-2 px-4 rounded" onClick={() => func(topic)} >
+        <button className="bg-secondary hover:text-black text-sm md:text-base text-white py-2 px-4 rounded" onClick={() => func(topic)} >
             {topic}
         </button>
     )

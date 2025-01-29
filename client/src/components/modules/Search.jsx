@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import "./Search.css";
 import NewSearchInput from "./NewSearchInput";
 import { UserContext } from "../App";
+import { Link } from "react-router-dom";
 
 const Search = () => {
   const { userId } = useContext(UserContext);
@@ -15,7 +16,7 @@ const Search = () => {
 
 
   return (
-    <div className="flex flex-col justify-center items-center text-white font-serif h-screen">
+    <div className="flex flex-col justify-center items-center text-white font-serif h-[80vh] md:h-screen ">
       <div className="flex flex-col items-center justify-end">
         <h1 className="text-6xl mb-2">Loogle</h1>
         <h3 className="text-xl text-gray-300">(like google but way way better)</h3>
@@ -31,7 +32,7 @@ const Search = () => {
       {userId ? (
         <div>
           <h4 className="items-center justify-center underline mt-8 text-base font-bold">
-            <a href="/profile">Click Here to Add a New Interest to Your Profile</a>
+            <Link className="flex text-center w-full" to="/profile">Click Here to Add a New Interest to Your Profile </Link>
           </h4>
         </div>
       ) : (
@@ -41,6 +42,7 @@ const Search = () => {
           </h4>
         </div>
       )}
+      <Link to="/about" className="text-gray-300 underline text-center text-sm pt-8">Wait what is Loogle???</Link>
     </div>
   );
 };

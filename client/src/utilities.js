@@ -50,11 +50,19 @@ export function get(endpoint, params = {}) {
 // Helper code to make a post request. Default parameter of empty JSON Object for params.
 // Returns a Promise to a JSON Object.
 export function post(endpoint, params = {}) {
-  return fetch(endpoint, {
+  const options = {
     method: "post",
-    headers: { "Content-type": "application/json" },
-    body: JSON.stringify(params),
-  })
+  };
+
+  // If params is FormData, don't set Content-Type (browser will set it automatically with boundary)
+  if (params instanceof FormData) {
+    options.body = params;
+  } else {
+    options.headers = { "Content-type": "application/json" };
+    options.body = JSON.stringify(params);
+  }
+
+  return fetch(endpoint, options)
     .then(convertToJSON) // convert result to JSON object
     .catch((error) => {
       // give a useful error message

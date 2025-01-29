@@ -8,6 +8,9 @@
 */
 
 const express = require("express");
+const path = require('path');  // Add this line
+// import middleware for handling file uploads
+const multer = require("multer");
 
 // import models so we can interact with the database
 const User = require("./models/user");
@@ -162,7 +165,7 @@ router.get("/interests", (req, res) => {
 router.get("/suggestions", (req, res) => {
   User.findById(req.user._id).then(async (user) => {  
     const topics = user.interests.map((interest) => interest.topic);
-    const prompt = "Provide 3 potential new interests that are not in this list but related to the topics" + topics + ". Moreover, you should be able to generate fun facts/theorems about each of the topics in future requests. Return the name of each interest with no description of each interest with a '//' in between each interest. Return you answer in the form of a string. Include no whitespace in between each interest and the // characters, but the interests themselves can have spaces between their words.`";
+    const prompt = "Provide 3 potential new interests that are not in this list but related to the topics" + topics + ". Moreover, you should be able to generate fun facts/theorems about each of the topics in future requests. Make sure you can generate many fun facts or theorems about each of the topics in future requests. Return the name of each interest with no description of each interest with a '//' in between each interest. Return you answer in the form of a string. Include no whitespace in between each interest and the // characters, but the interests themselves can have spaces between their words.`";
     const result = await model.generateContent(prompt);
     const temp = result.response.text().split("//");
     const suggestions = temp.map((item) => item.trim());
@@ -179,10 +182,10 @@ router.get("/validInterest", async (req, res) => {
   const response = result.response.text().toLowerCase();
   console.log('valid?', result.response.text());
   if (response.includes("yes")) {
-    console.log('sanity check passed')
+    console.log('Valid interest')
     res.send({ valid: true });
   } else {
-    console.log('sanity check failed')
+    console.log('Invalid interest')
     res.send({ valid: false });
   }
 });
@@ -198,8 +201,6 @@ router.post("/deleteInterest", (req, res) => {
     console.log(err);
   })
 })
-
-
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

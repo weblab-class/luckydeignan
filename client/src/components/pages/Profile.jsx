@@ -8,6 +8,7 @@ import { get } from "../../utilities";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import DisplayInterests from "../modules/displayInterests";
 
+
 const Profile = () => {
     const { userId, userName, handleLogin, handleLogout } = useContext(UserContext);
     const [interests, setInterests] = useState([]);
@@ -69,7 +70,6 @@ const Profile = () => {
         }
       }
 
-
     return (
         <div className="min-h-screen bg-primary flex flex-col font-serif text-white">
             {errorMessage && (
@@ -89,11 +89,11 @@ const Profile = () => {
               </button>
               <div className="mt-24 mb-8 w-full flex flex-col items-center justify-center">
                 <Link to="/">
-                <img
-                src={cloverImg}
-                alt="Lucky Clover"
-                className="w-32 h-32 object-contain rounded-full mb-4"
-                />
+                    <img
+                        src={cloverImg}
+                        alt="Profile Picture"
+                        className="w-32 h-32 object-contain rounded-full mb-4"
+                    />
                 </Link>
                 <h1 className="text-4xl mb-4">{userName}</h1>
                 <div className="flex flex-col items-center justify-center w-1/4">
@@ -115,8 +115,6 @@ const Profile = () => {
                     <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
                 </div>
             )}
-
-            
         </div>
     );
 };

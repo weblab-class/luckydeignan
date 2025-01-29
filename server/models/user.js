@@ -4,6 +4,7 @@ const Interest = require("./Interest");
 const UserSchema = new mongoose.Schema({
   name: String,
   googleid: String,
+  profilePicture: { type: String, default: "/clover.png"},
   interests: [
     {
       topic: String,
